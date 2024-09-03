@@ -31,9 +31,9 @@ creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
 client = gspread.authorize(creds)
 
 # تنظیم دسترسی به Google Sheets
-scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-creds = ServiceAccountCredentials.from_json_keyfile_name('pgpractice-df6083d215fd.json', scope)
-client = gspread.authorize(creds)
+#scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+#creds = ServiceAccountCredentials.from_json_keyfile_name('pgpractice-df6083d215fd.json', scope)
+#client = gspread.authorize(creds)
 
 def get_price_by_code(code):
     sheet_code = code[0].upper()
