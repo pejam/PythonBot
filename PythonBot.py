@@ -2,13 +2,11 @@
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from telegram import Update
-from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackContext
-
+from telegram.ext import Application, CommandHandler, MessageHandler, filters
 
 
 # توکن ربات تلگرام خود را اینجا قرار دهید
 TOKEN = "7309813282:AAFeJzOMokJdwE3IV3383GASYuB_FA7PWdI"
-
 
 # تنظیمات لاگ
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
@@ -21,29 +19,24 @@ client = gspread.authorize(creds)
 
 def get_price_by_code(code):
     sheet_code = code[0].upper()
-    
     try:
-        # پیدا کردن شیتی که نامش با کاراکتر اول کد کالا مطابقت دارد
-        #sheet = client.open("PriceList").worksheet(sheet_code)
         sheet = client.open("PriceList").sheet1
         cell = sheet.find(code)
         row = sheet.row_values(cell.row)
         price = row[8]  # ستون قیمت
-        
         if price:
             return f"قیمت برای کد {code}: {price}"
         else:
             return f"قیمت برای کد {code} موجود نیست، لطفاً با ادمین تماس بگیرید."
-    
     except gspread.exceptions.WorksheetNotFound:
         return "شیت مربوط به این کد یافت نشد."
     except gspread.exceptions.CellNotFound:
         return "کد مورد نظر در این شیت یافت نشد."
 
-async def start(update: Update, context: CallbackContext):
+async def start(update: Update, context):
     await update.message.reply_text('سلام! کد کالا را برای من ارسال کنید تا قیمت آن را به شما بگویم.')
 
-async def handle_message(update: Update, context: CallbackContext):
+async def handle_message(update: Update, context):
     code = update.message.text.strip()  # حذف فضاهای اضافی
     response = get_price_by_code(code)
     await update.message.reply_text(response)
