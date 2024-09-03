@@ -1,4 +1,5 @@
-﻿import logging
+﻿import os
+import logging
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from telegram import Update
@@ -11,6 +12,23 @@ TOKEN = "7309813282:AAFeJzOMokJdwE3IV3383GASYuB_FA7PWdI"
 # تنظیمات لاگ
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# تنظیم دسترسی به Google Sheets با استفاده از متغیرهای محیطی
+scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+creds_dict = {
+    "type": "service_account",
+    "project_id": "your_project_id",
+    "private_key_id": "your_private_key_id",
+    "private_key": os.getenv("GSPREAD_PRIVATE_KEY").replace("\\n", "\n"),
+    "client_email": os.getenv("GSPREAD_CLIENT_EMAIL"),
+    "client_id": "your_client_id",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "your_client_x509_cert_url"
+}
+creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
+client = gspread.authorize(creds)
 
 # تنظیم دسترسی به Google Sheets
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
