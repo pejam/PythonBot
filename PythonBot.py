@@ -17,15 +17,16 @@ logger = logging.getLogger(__name__)
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 creds_dict = {
     "type": "service_account",
-    "project_id": "your_project_id",
-    "private_key_id": "your_private_key_id",
+    "project_id": "pgpractice",
+    "private_key_id": "df6083d215fd4842ad2f7a85d1e60102cc33f69f",
     "private_key": os.getenv("GSPREAD_PRIVATE_KEY").replace("\\n", "\n"),
     "client_email": os.getenv("GSPREAD_CLIENT_EMAIL"),
-    "client_id": "your_client_id",
+    "client_id": "103004925027424587941",
     "auth_uri": "https://accounts.google.com/o/oauth2/auth",
     "token_uri": "https://oauth2.googleapis.com/token",
     "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-    "client_x509_cert_url": "your_client_x509_cert_url"
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/pgpractice%40pgpractice.iam.gserviceaccount.com",
+    "universe_domain": "googleapis.com"
 }
 creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
 client = gspread.authorize(creds)
