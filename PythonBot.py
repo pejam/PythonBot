@@ -36,28 +36,47 @@ client = gspread.authorize(creds)
 #creds = ServiceAccountCredentials.from_json_keyfile_name('pgpractice-df6083d215fd.json', scope)
 #client = gspread.authorize(creds)
 
-def get_price_by_code(code):
-    sheet_code = code[0].upper()
+async def get_price_by_code(code):
+    sheet_prefix = code[0].upper()
+    sheet_names = [
+        "A فلش", "B لوازم جانبی کامپیوتر", "C گیمینگ", 
+        "D تجهیزات صوتی و تصویر", "E هندزفری", "F شارژر", 
+        "G کابل شارژ", "H هولدر", "I هدست", "J اسپیکر", "K ساعت",
+        "L کیبورد", "M ماوس", "N جانبی موبایل", "O دانگل و اتصالات", 
+        "P پاوربانک"
+    ]
+    
+    matching_sheet_name = None
+    for name in sheet_names:
+        if name.startswith(sheet_prefix):
+            matching_sheet_name = name
+            break
+
+    if matching_sheet_name is None:
+        return f"شیت مربوط به کد '{sheet_prefix}' یافت نشد."
+
     try:
-        sheet = client.open("PriceList").sheet1
+        sheet = client.open("PriceList").worksheet(matching_sheet_name)
         cell = sheet.find(code)
         row = sheet.row_values(cell.row)
-        price = row[8]  # ستون قیمت
-        if price:
-            return f"قیمت برای کد {code}: {price}"
-        else:
-            return f"قیمت برای کد {code} موجود نیست، لطفاً با ادمین تماس بگیرید."
-    except gspread.exceptions.WorksheetNotFound:
-        return "شیت مربوط به این کد یافت نشد."
-    except gspread.exceptions.CellNotFound:
-        return "کد مورد نظر در این شیت یافت نشد."
+        price = row[8]  # ستون قیمت، ایندکس 7 برای ستون هشتم
+        
+        if not price or price == "0":
+            return f"قیمت برای کد {code} موجود نیست یا صفر است، لطفاً با ادمین تماس بگیرید."
+        
+        return f"قیمت برای کد {code}: {price}"
+
+    except WorksheetNotFound:
+        return f"شیت '{matching_sheet_name}' یافت نشد."
+    except CellNotFound:
+        return f"کد {code} در شیت '{matching_sheet_name}' یافت نشد."
 
 async def start(update: Update, context):
     await update.message.reply_text('سلام! کد کالا را برای من ارسال کنید تا قیمت آن را به شما بگویم.')
 
 async def handle_message(update: Update, context):
     code = update.message.text.strip()  # حذف فضاهای اضافی
-    response = get_price_by_code(code)
+    response = await get_price_by_code(code)
     await update.message.reply_text(response)
 
 def main():
