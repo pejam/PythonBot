@@ -4,31 +4,33 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
+from config.settings import settings
 
-
-# توکن ربات تلگرام خود را اینجا قرار دهید
-TOKEN = "7309813282:AAFeJzOMokJdwE3IV3383GASYuB_FA7PWdI"
 
 # تنظیمات لاگ
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# توکن ربات تلگرام خود را اینجا قرار دهید
+TOKEN = settings.TELEGRAM_BOT_TOKEN
+
 # تنظیم دسترسی به Google Sheets با استفاده از متغیرهای محیطی
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-creds_dict = {
-    "type": "service_account",
-    "project_id": "pgpractice",
-    "private_key_id": "adce347384eb4a8b244e5b68411dcd0fd2e021c8",
-    "private_key": os.getenv("GSPREAD_PRIVATE_KEY").replace("\\n", "\n"),
-    "client_email": os.getenv("GSPREAD_CLIENT_EMAIL"),
-    "client_id": "103004925027424587941",
-    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-    "token_uri": "https://oauth2.googleapis.com/token",
-    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/pgpractice%40pgpractice.iam.gserviceaccount.com",
-    "universe_domain": "googleapis.com"
-}
-creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
+#creds_dict = {
+#    "type": "service_account",
+#    "project_id": "pgpractice",
+#    "private_key_id": "adce347384eb4a8b244e5b68411dcd0fd2e021c8",
+#    "private_key": os.getenv("GSPREAD_PRIVATE_KEY").replace("\\n", "\n"),
+#    "client_email": os.getenv("GSPREAD_CLIENT_EMAIL"),
+#    "client_id": "103004925027424587941",
+#    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+#    "token_uri": "https://oauth2.googleapis.com/token",
+#    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+#    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/pgpractice%40pgpractice.iam.gserviceaccount.com",
+#    "universe_domain": "googleapis.com"
+#}
+#creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
+creds = ServiceAccountCredentials.from_json_keyfile_name(settings.GSPREAD_CREDENTIALS, scope)
 client = gspread.authorize(creds)
 
 # تنظیم دسترسی به Google Sheets

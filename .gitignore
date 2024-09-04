@@ -24,3 +24,6 @@ pyvenv.cfg
 *.userosscache
 *.sln.docstates
 "pgpractice-df6083d215fd.json" 
+
+secrets/
+obj/
