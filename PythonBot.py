@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 TOKEN = settings.TELEGRAM_BOT_TOKEN
 
 # تنظیم دسترسی به Google Sheets با استفاده از متغیرهای محیطی
-scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+
 #creds_dict = {
 #    "type": "service_account",
 #    "project_id": "pgpractice",
@@ -30,7 +30,13 @@ scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/au
 #    "universe_domain": "googleapis.com"
 #}
 #creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
-creds = ServiceAccountCredentials.from_json_keyfile_name(settings.GSPREAD_CREDENTIALS, scope)
+scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+if settings.DEBUG:
+    # حالت دیباگ: استفاده از فایل JSON
+    creds = ServiceAccountCredentials.from_json_keyfile_name(settings.GSPREAD_CREDENTIALS, scope)
+else:
+    # حالت ریلیز: استفاده از دیکشنری JSON
+    creds = ServiceAccountCredentials.from_json_keyfile_dict(settings.GSPREAD_CREDENTIALS, scope)
 client = gspread.authorize(creds)
 
 # تنظیم دسترسی به Google Sheets
