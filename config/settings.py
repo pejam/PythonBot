@@ -1,13 +1,19 @@
 
 import os
+import json
+import logging
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
 
 class Settings:
     def __init__(self):
-        self.DEBUG = os.getenv("DEBUG", "False") == "True"
+        self.DEBUG = os.getenv("DEBUG", "False") == "False"
 
         if self.DEBUG:
-            self.TELEGRAM_BOT_TOKEN = "7309813282:AAFeJzOMokJdwE3IV3383GASYuB_FA7PWdI"
-            self.GSPREAD_CREDENTIALS = os.path.join(os.path.dirname(__file__), "../secrets/pgpractice-adce347384eb.json")
+            with open(os.path.join(os.path.dirname(__file__), "../secrets/config.json")) as config_file:
+                config_data = json.load(config_file)
+                self.TELEGRAM_BOT_TOKEN = config_data["TELEGRAM_BOT_TOKEN"]
+                self.GSPREAD_CREDENTIALS = os.path.join(os.path.dirname(__file__), "../secrets/pgpractice-adce347384eb.json")
         else:
             self.TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
             self.GSPREAD_CREDENTIALS = {
