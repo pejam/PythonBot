@@ -16,7 +16,6 @@ def main():
 
     # اضافه کردن هندلرها
     application.add_handler(CommandHandler("start", start))
-    application.add_handler(CommandHandler("help", start))  # یا می‌توانید یک تابع کمک جداگانه اضافه کنید
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))  # تنها متن و نه دستورات
 
     # شروع و نگهداری از ربات
