@@ -1,33 +1,27 @@
-﻿#from telegram import Update
-#from telegram.ext import CallbackContext
-#from bot.utils import get_price_by_code
-
-#async def start(update: Update, context: CallbackContext):
-#    await update.message.reply_text('سلام! کد کالا را برای من ارسال کنید تا قیمت آن را به شما بگویم.')
-
-#async def handle_message(update: Update, context: CallbackContext):
-#    code = update.message.text.strip()  # حذف فضاهای اضافی
-#    response = await get_price_by_code(code)
-#    await update.message.reply_text(response)
-
-from telegram import ReplyKeyboardMarkup, KeyboardButton, Update
+﻿from telegram import ReplyKeyboardMarkup, KeyboardButton, Update
 from telegram.ext import ContextTypes
 from bot.utils import get_price_by_code
 
 # ایجاد منو
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # ایجاد دکمه‌های منو
-    keyboard = [
-        [KeyboardButton("استعلام قیمت")],
-        [KeyboardButton("مقایسه قیمت")]
-    ]
-    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+    # بررسی اگر کدی از طریق deep link ارسال شده باشد
+    if context.args:
+        code = context.args[0]  # دریافت کد کالا از لینک
+        response = await get_price_by_code(code)
+        await update.message.reply_text(response)
+    else:
+        # ایجاد دکمه‌های منو
+        keyboard = [
+            [KeyboardButton("استعلام قیمت")],
+            [KeyboardButton("مقایسه قیمت")]
+        ]
+        reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
 
-    # ارسال پیام با منو
-    await update.message.reply_text(
-        "سلام! لطفاً یکی از گزینه‌های زیر را انتخاب کنید:",
-        reply_markup=reply_markup
-    )
+        # ارسال پیام با منو
+        await update.message.reply_text(
+            "سلام! لطفاً یکی از گزینه‌های زیر را انتخاب کنید:",
+            reply_markup=reply_markup
+        )
 
 # هندلر پیام‌ها برای مدیریت دکمه‌های منو
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -71,4 +65,3 @@ async def compare_prices(update: Update, context: ContextTypes.DEFAULT_TYPE, cod
         await update.message.reply_text(f"قیمت {code1}: {price1}\nقیمت {code2}: {price2}")
     else:
         await update.message.reply_text(f"خطایی در مقایسه کدها:\n{price1}\n{price2}")
-
