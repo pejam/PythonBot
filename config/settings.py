@@ -7,7 +7,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 class Settings:
     def __init__(self):
-        self.DEBUG = os.getenv("DEBUG", "False") == "False"
+        self.DEBUG = os.getenv("DEBUG", "False") == "True"
 
         if self.DEBUG:
             with open(os.path.join(os.path.dirname(__file__), "../secrets/config.json")) as config_file:
